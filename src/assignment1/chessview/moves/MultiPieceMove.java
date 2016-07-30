@@ -1,9 +1,6 @@
 package assignment1.chessview.moves;
 
-import java.util.*;
-
-import assignment1.chessview.*;
-import assignment1.chessview.pieces.Piece;
+import org.eclipse.jdt.annotation.NonNull;
 
 
 /**
@@ -14,5 +11,5 @@ import assignment1.chessview.pieces.Piece;
  * 
  */
 public interface MultiPieceMove extends Move {	
-	public String toString();
+    public @NonNull String toString();
 }

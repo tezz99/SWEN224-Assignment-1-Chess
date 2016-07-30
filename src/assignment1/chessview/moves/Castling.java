@@ -1,5 +1,7 @@
 package assignment1.chessview.moves;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import assignment1.chessview.Board;
 import assignment1.chessview.Position;
 import assignment1.chessview.pieces.King;
@@ -19,7 +21,7 @@ public class Castling implements MultiPieceMove {
 	return isWhite;
     }
 
-    public void apply(Board board) {
+    public void apply(@NonNull Board board) {
 	int row = isWhite ? 1 : 8;
 	int rcol = kingSide ? 8 : 1;
 	int rncol = kingSide ? 6 : 4;
@@ -34,7 +36,7 @@ public class Castling implements MultiPieceMove {
 	board.move(rpos, rnpos);
     }
 
-    public boolean isValid(Board board) {
+    public boolean isValid(@NonNull Board board) {
 	int row = isWhite ? 1 : 8;
 	int col = kingSide ? 8 : 1;
 	Position kpos = new Position(row,5);
@@ -49,7 +51,7 @@ public class Castling implements MultiPieceMove {
 		&& !board.rookMoved(isWhite,kingSide);
     }		
 
-    public String toString() {
+    public @NonNull String toString() {
 	if(kingSide) {
 	    return "O-O";
 	} else {

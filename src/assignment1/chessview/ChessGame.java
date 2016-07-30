@@ -7,6 +7,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import assignment1.chessview.moves.Castling;
 import assignment1.chessview.moves.Check;
 import assignment1.chessview.moves.EnPassant;
@@ -32,9 +34,9 @@ import assignment1.chessview.pieces.Rook;
  * 
  */
 public class ChessGame {
-    private ArrayList<Round> rounds;
+    private @NonNull ArrayList<Round> rounds;
 
-    public ChessGame(String sheet) throws IOException {
+    public ChessGame(@NonNull String sheet) throws IOException {
 	this(new StringReader(sheet));
     }
 
@@ -44,7 +46,7 @@ public class ChessGame {
      * 
      * @param gameSheet
      */
-    public ChessGame(Reader input) throws IOException {
+    public ChessGame(@NonNull Reader input) throws IOException {
 	rounds = new ArrayList<>();
 
 	BufferedReader reader = new BufferedReader(input);
@@ -55,16 +57,23 @@ public class ChessGame {
 	    if(line.equals("")) { continue; } // skip blank lines
 	    int pos = line.indexOf(' ');
 	    if(pos == -1) { pos = line.length(); }
-	    Move white = moveFromString(line.substring(0,pos),true);
+
+
+	    String whiteMoveString = line.substring(0,pos);
+	    assert whiteMoveString != null; //Ensure that the white move string is not equal to null.
+	    Move white = moveFromString(whiteMoveString,true);
+
 	    Move black = null;
 	    if(pos != line.length()) {
-		black = moveFromString(line.substring(pos+1),false);
+		String blackMoveString = line.substring(pos+1);
+		assert blackMoveString != null; //Ensure that black move string is not equal to null.
+		black = moveFromString(blackMoveString, false);
 	    }
 	    rounds.add(new Round(white,black));
 	}
     }
 
-    public List<Round> rounds() {
+    public @NonNull List<Round> rounds() {
 	return rounds;
     }
 
@@ -74,19 +83,28 @@ public class ChessGame {
      * 
      * @return
      */
-    public List<Board> boards() {
+    public @NonNull List<Board> boards() {
 	ArrayList<Board> boards = new ArrayList<>();
 	Board b = new Board();
 	boards.add(b);
 	boolean lastTime = false;
 	for(Round r : rounds) {		
 	    if (lastTime) { return boards; }
-	    b = new Board(b);			
-	    if(!b.apply(r.white())) { return boards; }
-	    boards.add(b);	
+	    b = new Board(b);	
+
+	    Move whiteMove = r.white();
+	    assert whiteMove != null; //Ensure that white move is not equal to null.
+
+	    if(!b.apply(whiteMove)) { return boards; }
+	    boards.add(b);
+
+
 	    if(r.black() != null) {
-		b = new Board(b);				
-		if(!b.apply(r.black())) { return boards; }
+		Move blackMove = r.black();
+		assert blackMove != null; //Ensure that black move is not equal to null.
+
+		b = new Board(b);
+		if(!b.apply(blackMove)) { return boards; }
 		boards.add(b);				
 	    } else {
 		lastTime = true;
@@ -101,7 +119,7 @@ public class ChessGame {
      * @param str
      * @return
      */
-    private static Move moveFromString(String str, boolean isWhite) {
+    private static @NonNull Move moveFromString(@NonNull String str, boolean isWhite) {
 	Piece piece;		
 	int index = 0;
 	char lookahead = str.charAt(index);
@@ -143,7 +161,11 @@ public class ChessGame {
 	    piece = new Pawn(isWhite);
 	}
 
-	Position start = positionFromString(str.substring(index,index+2));
+	//Ensures null is not passed to positionFromString method.
+	String startPosString = str.substring(index,index+2);
+	assert startPosString != null; 
+
+	Position start = positionFromString(startPosString);
 	char moveType = str.charAt(index+2);
 	Piece target = null;
 	index = index + 3;		
@@ -178,7 +200,11 @@ public class ChessGame {
 	    throw new IllegalArgumentException("invalid sheet");
 	}
 
-	Position end = positionFromString(str.substring(index,index+2));
+	//Ensures null is not passed to positionFromString method.
+	String endPosString = str.substring(index,index+2);
+	assert endPosString != null; 
+
+	Position end = positionFromString(endPosString);
 	index = index + 2;
 
 	Move move;
@@ -232,7 +258,7 @@ public class ChessGame {
 	return move;
     }
 
-    private static Position positionFromString(String pos) {
+    private static @NonNull Position positionFromString(@NonNull String pos) {
 	if(pos.length() != 2) {
 	    throw new IllegalArgumentException("invalid position: " + pos);
 	}

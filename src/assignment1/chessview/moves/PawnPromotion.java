@@ -1,7 +1,10 @@
 package assignment1.chessview.moves;
 
-import assignment1.chessview.*;
-import assignment1.chessview.pieces.*;
+import org.eclipse.jdt.annotation.NonNull;
+
+import assignment1.chessview.Board;
+import assignment1.chessview.pieces.Pawn;
+import assignment1.chessview.pieces.Piece;
 
 /**
  * This represents a "check move". Note that, a check move can only be made up
@@ -11,30 +14,30 @@ import assignment1.chessview.pieces.*;
  * 
  */
 public class PawnPromotion implements MultiPieceMove {
-	private Piece promotion;
-	private SinglePieceMove move;
-	
-	public PawnPromotion(SinglePieceMove move, Piece promotion) {		
-		this.promotion = promotion;
-		this.move = move;
-	}
-	
-	public boolean isWhite() {
-		return move.isWhite();
-	}
-	
-	public boolean isValid(Board board) {				
-		int row = isWhite() ? 8 : 1;		
-		return move.isValid(board) && move.piece() instanceof Pawn
-				&& move.newPosition.row() == row;
-	}
-	
-	public void apply(Board board) {
-		move.apply(board);
-		board.setPieceAt(move.newPosition(), promotion);
-	}
-	
-	public String toString() {
-		return super.toString() + "=" + SinglePieceMove.pieceChar(promotion);
-	}
+    private @NonNull Piece promotion;
+    private @NonNull SinglePieceMove move;
+
+    public PawnPromotion(@NonNull SinglePieceMove move, @NonNull Piece promotion) {		
+	this.promotion = promotion;
+	this.move = move;
+    }
+
+    public boolean isWhite() {
+	return move.isWhite();
+    }
+
+    public boolean isValid(@NonNull Board board) {				
+	int row = isWhite() ? 8 : 1;		
+	return move.isValid(board) && move.piece() instanceof Pawn
+		&& move.newPosition.row() == row;
+    }
+
+    public void apply(@NonNull Board board) {
+	move.apply(board);
+	board.setPieceAt(move.newPosition(), promotion);
+    }
+
+    public @NonNull String toString() {
+	return super.toString() + "=" + SinglePieceMove.pieceChar(promotion);
+    }
 }
